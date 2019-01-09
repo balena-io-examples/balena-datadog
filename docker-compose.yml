@@ -1,0 +1,16 @@
+version: '2'
+services:
+  frontend:
+    build: ./frontend
+    privileged: true
+    ports:
+      - "80:80"
+  datadog:
+    build: ./datadog
+    privileged: true
+    restart: always
+    pid: "host"
+    network_mode: "host"
+    # labels:
+    #   io.resin.features.dbus: '1'
+    #   io.resin.features.balena-socket: '1'
