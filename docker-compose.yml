@@ -11,6 +11,6 @@ services:
     restart: always
     pid: "host"
     network_mode: "host"
-    # labels:
-    #   io.resin.features.dbus: '1'
-    #   io.resin.features.balena-socket: '1'
+    labels:
+      io.resin.features.dbus: '1'
+      io.resin.features.balena-socket: '1'
