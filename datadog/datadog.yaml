@@ -1,0 +1,6 @@
+dd_url: https://app.datadoghq.com
+api_key: 575ac8ff9e54fdcd...
+  - name: docker
+    polling: true
+process_config:
+  enabled: true

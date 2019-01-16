@@ -1,10 +1,24 @@
-FROM balenalib/%%BALENA_MACHINE_NAME%%:jessie-build
+FROM balenalib/%%BALENA_MACHINE_NAME%%-golang:latest-build AS build
 
-RUN apt-get update && apt-get install -yq sysstat \
-    python-dev \
-    python-pip git && \
+RUN apt-get update && apt-get install -yq sysstat python python-dev python-pip libpython-dev python-setuptools git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY ./start.sh /usr/src/app/start.sh
+ENV INITSYSTEM on
+ENV GOPATH=/usr/app
+ENV PATH=$PATH:/usr/app/bin
 
-CMD ["/bin/sh","/usr/src/app/start.sh"]
+COPY ./requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt
+
+RUN git clone https://github.com/DataDog/datadog-agent.git /usr/app/src/github.com/DataDog/datadog-agent
+
+WORKDIR /usr/app/src/github.com/DataDog/datadog-agent
+
+RUN export PATH=$PATH:$GOPATH/bin && \
+  cd /usr/app/src/github.com/DataDog/datadog-agent && \
+  invoke deps && \
+  invoke agent.build --build-exclude=snmp,systemd && \
+  ln -s /usr/app/src/github.com/DataDog/datadog-agent/bin/agent/dist/ /etc/datadog-agent
+
+ENTRYPOINT cd /usr/app/src/github.com/DataDog/datadog-agent && ./bin/agent/agent -c ./bin/agent/dist/datadog.yaml start
