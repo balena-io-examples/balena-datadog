@@ -1,17 +1,14 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-golang:latest-build AS build
 
-RUN apt-get update && apt-get install -yq sysstat python python-dev python-pip libpython-dev python-setuptools git && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git 
 
-ENV INITSYSTEM on
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 ENV GOPATH=/usr/app
 ENV PATH=$PATH:/usr/app/bin
 
-COPY ./requirements.txt requirements.txt
-
-RUN pip install -r requirements.txt
-
-RUN git clone https://github.com/DataDog/datadog-agent.git /usr/app/src/github.com/DataDog/datadog-agent
+RUN git clone --branch 6.8.3 --depth 1 https://github.com/DataDog/datadog-agent.git /usr/app/src/github.com/DataDog/datadog-agent
 
 WORKDIR /usr/app/src/github.com/DataDog/datadog-agent
 
@@ -21,4 +18,17 @@ RUN export PATH=$PATH:$GOPATH/bin && \
   invoke agent.build --build-exclude=snmp,systemd && \
   ln -s /usr/app/src/github.com/DataDog/datadog-agent/bin/agent/dist/ /etc/datadog-agent
 
-ENTRYPOINT cd /usr/app/src/github.com/DataDog/datadog-agent && ./bin/agent/agent -c ./bin/agent/dist/datadog.yaml start
+RUN ls /usr/app/src/github.com/DataDog/datadog-agent/bin/
+
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian
+
+COPY --from=build ./usr/app/src/github.com/DataDog/datadog-agent/bin/ ./usr/app/src/github.com/DataDog/datadog-agent/bin/
+RUN ln -s /usr/app/src/github.com/DataDog/datadog-agent/bin/agent/dist/ /etc/datadog-agent
+
+RUN install_packages sysstat python libpython2.7
+
+WORKDIR /usr/app/src/github.com/DataDog/datadog-agent
+
+COPY datadog.yaml datadog.yaml
+
+CMD ln -s /var/run/balena.sock /var/run/docker.sock && ./bin/agent/agent -c datadog.yaml run
