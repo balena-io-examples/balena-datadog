@@ -1,4 +1,3 @@
-api_key:
 # Autodiscovery settings for vanilla Docker
 logs_enabled: true
 listeners:
