@@ -1,6 +1,6 @@
-![alt text](https://raw.githubusercontent.com/balena-io-playground/balena-datadog/master/img/balena_datadog.png)
-
 # Balena + Datadog Example Project
+
+![alt text](https://raw.githubusercontent.com/balena-io-playground/balena-datadog/master/img/balena_datadog.png)
 
 This is a sample multi-container project to monitor a [balena](https://balena.io) fleet with [datadog](http://datadog.com).
 
