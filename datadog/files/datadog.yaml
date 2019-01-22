@@ -1,0 +1,11 @@
+# Autodiscovery settings for vanilla Docker
+logs_enabled: true
+listeners:
+  - name: docker
+config_providers:
+  - name: docker
+    polling: true
+process_config:
+  enabled: true
+apm_config:
+  enabled: false # disable APM
