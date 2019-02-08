@@ -1,6 +1,6 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-golang:latest-build AS build
 
-RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git
+RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git python-wheel
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
@@ -14,8 +14,8 @@ WORKDIR /usr/app/src/github.com/DataDog/datadog-agent
 
 RUN export PATH=$PATH:$GOPATH/bin && \
   cd /usr/app/src/github.com/DataDog/datadog-agent && \
-  invoke deps && \
-  invoke agent.build --build-exclude=snmp,systemd
+  invoke -w deps && \
+  invoke -w agent.build --build-exclude=snmp,systemd
 
 FROM balenalib/%%BALENA_MACHINE_NAME%%-debian
 
