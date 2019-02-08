@@ -1,3 +1,9 @@
+##  Changes Added
+
+1. added "-w" in invoke command , as for some arch type OS , it tries to uninstall mercurial 4.x after installing mercurial 4.6.x, which was making it fail
+2. Added installation of python-wheel
+
+
 # Balena + Datadog Example Project
 
 ![alt text](https://raw.githubusercontent.com/balena-io-playground/balena-datadog/master/img/balena_datadog.png)
