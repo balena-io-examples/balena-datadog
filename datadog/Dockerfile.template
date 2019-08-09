@@ -1,6 +1,6 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-golang:latest-build AS build
 
-RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git libkrb5-dev build-essential
+RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git libkrb5-dev cmake
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
