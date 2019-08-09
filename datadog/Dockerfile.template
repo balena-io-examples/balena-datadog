@@ -1,6 +1,6 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-golang:latest-build AS build
 
-RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git
+RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git libkrb5-dev build-essential
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
@@ -8,13 +8,15 @@ RUN pip install -r requirements.txt
 ENV GOPATH=/usr/app
 ENV PATH=$PATH:/usr/app/bin
 
-RUN git clone --branch 6.8.3 --depth 1 https://github.com/DataDog/datadog-agent.git /usr/app/src/github.com/DataDog/datadog-agent
+RUN git clone --branch 6.13.0 --depth 1 https://github.com/DataDog/datadog-agent.git /usr/app/src/github.com/DataDog/datadog-agent
 
 WORKDIR /usr/app/src/github.com/DataDog/datadog-agent
 
 RUN export PATH=$PATH:$GOPATH/bin && \
   cd /usr/app/src/github.com/DataDog/datadog-agent && \
-  invoke deps && \
+  invoke deps -v
+
+RUN invoke rtloader.build && invoke rtloader.install && \
   invoke agent.build --build-exclude=snmp,systemd
 
 FROM balenalib/%%BALENA_MACHINE_NAME%%-debian
