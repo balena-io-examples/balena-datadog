@@ -24,8 +24,10 @@ FROM balenalib/%%BALENA_MACHINE_NAME%%-debian
 WORKDIR /usr/app
 
 COPY --from=build ./usr/app/src/github.com/DataDog/datadog-agent/bin/ /usr/app/build/
+COPY --from=build /usr/app/src/github.com/DataDog/datadog-agent/rtloader/include/ /usr/include/
+COPY --from=build /usr/app/src/github.com/DataDog/datadog-agent/rtloader/rtloader/libdatadog-agent-rtloader.so.0.1.0 /usr/lib/
 COPY files /usr/app/files
-RUN chmod +x files/start.sh
+RUN chmod +x files/start.sh && ldconfig
 
 RUN ln -s /usr/app/build/agent/dist/ /etc/datadog-agent
 
