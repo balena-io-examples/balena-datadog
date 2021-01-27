@@ -1,9 +1,9 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-golang:latest-build AS build
 
-RUN install_packages sysstat python python-dev python-pip libpython-dev python-setuptools git libkrb5-dev cmake
+RUN install_packages sysstat python3 python3-dev python3-pip libpython3-dev python3-setuptools git libkrb5-dev cmake
 
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 ENV GOPATH=/usr/app
 ENV PATH=$PATH:/usr/app/bin
@@ -37,6 +37,6 @@ RUN mkdir /etc/datadog-agent/conf.d/network.d
 RUN ln -s /usr/app/files/disk.yaml /etc/datadog-agent/conf.d/disk.d/conf.yaml.default
 RUN ln -s /usr/app/files/network.yaml /etc/datadog-agent/conf.d/network.d/conf.yaml.default
 
-RUN install_packages sysstat python libpython2.7
+RUN install_packages sysstat python3 libpython3.9
 
 CMD ./files/start.sh
