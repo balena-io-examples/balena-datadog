@@ -22,7 +22,7 @@ RUN git clone --branch 7.25.1 --depth 1 https://github.com/DataDog/datadog-agent
 
 WORKDIR /usr/app/src/github.com/DataDog/datadog-agent
 
-RUN export PATH=$PATH:$GOPATH/bin && \
+RUN export PATH=$PATH:$GOPATH/bin GODEBUG=netdns=go && \
   cd /usr/app/src/github.com/DataDog/datadog-agent && \
   invoke deps -v
 
